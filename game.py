@@ -2,12 +2,17 @@
 import pygame
 import logging
 
+# vlc player must be installed on local machine
+import vlc
+
 # local imports
 import env
 import map_object
 import constants as _c
 import utils
 
+# Megalovania
+p = vlc.MediaPlayer('https://archive.org/download/TobyFoxMegalovania/Toby%20Fox%20-%20Megalovania.mp3')
 
 class aDnDias:
     def __init__(self):
@@ -93,4 +98,5 @@ class aDnDias:
 
 if __name__ == "__main__":
     myGame = aDnDias()
+    p.play()
     myGame.run()
