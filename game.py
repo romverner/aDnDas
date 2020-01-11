@@ -4,6 +4,7 @@ import logging
 
 # local imports
 import env
+import map_object
 import constants as _c
 import utils
 
@@ -18,7 +19,7 @@ class aDnDias:
         self.disp = pygame.display.set_mode((_c.DISP_WIDTH, _c.DISP_HEIGHT))
         pygame.display.set_caption(_c.TITLE_STR)
         self.disp.fill(_c.BG_COLOR)
-        self.mo = env.MapObject(game_disp=self.disp, log=self.log)
+        self.mo = map_object.MapObject(game_disp=self.disp, log=self.log)
         self.mo.render()
 
         # game status variables
