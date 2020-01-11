@@ -1,6 +1,7 @@
 import pygame
 import logging
 import random
+import math
 import constants as _c
 
 
@@ -34,12 +35,19 @@ class MapObject():
             for col_idx, tile in enumerate(row):
                 self.log.debug("row {}, col {} -- {}".format(row_idx, col_idx, tile))
 
+    def get_tile_at_pos(self, pos):
+        x_pos = x_pos - self.x_pos
+        y_pos = y_pos - self.y_pos
+        col_idx = math.floor(x_pos / self.width * self.width_in_tiles)
+        row_idx = math.floor(y_pos / self.height * self.height_in_tiles)
+        return self.tiles[row_idx][col_idx]
+
     def render(self):
         self.log.debug("about to render tiles onto board")
         for row in self.tiles:
             for tile in row:
                 pygame.draw.rect(self.disp,
-                    tile.sprite,
+                    tile.get_sprite(),
                     (tile.x_pos, tile.y_pos, _c.TILE_WIDTH, _c.TILE_HEIGHT))
 
 class EnvObject():
@@ -47,10 +55,20 @@ class EnvObject():
         self.x_pos = x_pos
         self.y_pos = y_pos
         self.tile_type = tile_type
+        self.highlighted = False
         self.sprite = _c.TILE_IMAGES.get(tile_type, _c.DEFAULT_TILE)
 
     def do_work(self):
         self.x_pos = self.x_pos + 2
+
+    def get_sprite(self):
+        if self.highlighted:
+            return _c.TILE_IMAGES.get(_c.HIGHLIGHTED)
+        else:
+            return self.sprite
+
+    def highlight(self):
+        self.highlighted = True
 
     def __repr__(self):
         return "tile {} at {},{}".format(self.tile_type, self.x_pos, self.y_pos)

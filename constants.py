@@ -26,6 +26,7 @@ S_WALL = 's_wall'
 FLOOR = 'floor'
 WATER = 'water'
 NO_TEXTURE = 'default'
+HIGHLIGHTED = 'highlighted'
 TILE_IMAGES = {
     W_WALL: (51, 51, 51),
     E_WALL: (51, 51, 51),
@@ -37,8 +38,12 @@ TILE_IMAGES = {
     SW_WALL: (51, 51, 51), 
     FLOOR: (51, 153, 102),
     WATER: (0, 51, 204),
-    NO_TEXTURE: DEFAULT_TILE
+    NO_TEXTURE: DEFAULT_TILE,
+    HIGHLIGHTED: (255, 255, 255)
 }
+TILE_ORDER = [W_WALL, E_WALL, S_WALL, N_WALL, NW_WALL,
+    SW_WALL, NE_WALL, SE_WALL, FLOOR, WATER    
+]
 
 # status options for the state of the game
 RUNNING_STATUS = 'running'
