@@ -28,6 +28,7 @@ class aDnDias:
 
     def mouse_up_handler(self, event):
         self.mouse_clicked = False
+        self.mo.set_tile_at_position(event.pos, self.tile_update_type)
 
     def mouse_down_handler(self, event):
         self.mouse_clicked = True
