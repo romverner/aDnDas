@@ -16,8 +16,9 @@ if __name__ == "__main__":
     disp = pygame.display.set_mode((_c.DISP_WIDTH, _c.DISP_HEIGHT))
     pygame.display.set_caption(_c.TITLE_STR)
     disp.fill(_c.BG_COLOR)
+    mo = env.MapObject(game_disp=disp, log=log)
+    mo.render()
 
-    log.debug("env constants: {}".format(env.env_const))
     status = _c.RUNNING_STATUS
 
     log.info("about to start main loop")
