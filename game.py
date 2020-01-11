@@ -24,10 +24,16 @@ class aDnDias:
         # game status variables
         self.status = _c.RUNNING_STATUS
         self.tile_update_type = 'floor'
+        self.mouse_clicked = False
 
-    def mouse_motion_handler(self, event):
-        self.mo.get_tile_at_pos(event.pos).highlight()
-        self.mo.render()
+    def mouse_up_handler(self, event):
+        self.mouse_clicked = False
+
+    def mouse_down_handler(self, event):
+        self.mouse_clicked = True
+
+    def mouse_motion_clicked_handler(self, event):
+        self.mo.set_tile_at_position(event.pos, self.tile_update_type)
 
     def keypress_event_handler(self, event):
         self.log.debug("key was pressed")
@@ -59,15 +65,19 @@ class aDnDias:
 
             # event handlers
             for event in pygame.event.get():
-                self.log.debug("handling event: {}".format(event))
+                if not event.type == pygame.MOUSEMOTION:
+                    self.log.debug("handling event: {}".format(event))
                 if event.type == pygame.QUIT:
                     self.status = _c.QUIT_STATUS
                     self.log.debug("quitting game")
                 if event.type == pygame.KEYDOWN:
                     self.keypress_event_handler(event)
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.mouse_up_handler(event)
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.mouse_motion_handler(event)
-
+                    self.mouse_down_handler(event)
+                if event.type == pygame.MOUSEMOTION and self.mouse_clicked:
+                    self.mouse_motion_clicked_handler(event)
                     
                 if event.type in _c.UNUSED_EVENTS:
                     self.log.debug("captured unused event of type: {}".format(event.type))

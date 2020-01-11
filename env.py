@@ -27,7 +27,7 @@ class MapObject():
             for col in range(self.width_in_tiles):
                 self.tiles[-1].append(EnvObject(x_pos = self.x_pos + _c.TILE_WIDTH * col,
                                                 y_pos = self.y_pos + _c.TILE_HEIGHT * row,
-                                                tile_type = random.choice(list(_c.TILE_IMAGES.keys()))
+                                                tile_type = _c.FLOOR
                                             )
                                       )
 
@@ -41,15 +41,30 @@ class MapObject():
         y_pos = y_pos - self.y_pos
         col_idx = math.floor(x_pos / self.width * self.width_in_tiles)
         row_idx = math.floor(y_pos / self.height * self.height_in_tiles)
+
+        if row_idx < 0 or row_idx >= self.height_in_tiles:
+            return None
+
+        if col_idx < 0 or col_idx >= self.width_in_tiles:
+            return None
+
         return self.tiles[row_idx][col_idx]
+
+    def set_tile_at_position(self, pos, tile):
+        selected_tile = self.get_tile_at_pos(pos)
+        if selected_tile is not None:
+            selected_tile.set_tile_sprite(tile)
+            pygame.draw.rect(self.disp, selected_tile.get_sprite(), 
+                selected_tile.get_rect())
 
     def render(self):
         self.log.debug("about to render tiles onto board")
         for row in self.tiles:
             for tile in row:
+                self.log.debug(tile.get_sprite())
                 pygame.draw.rect(self.disp,
                     tile.get_sprite(),
-                    (tile.x_pos, tile.y_pos, _c.TILE_WIDTH, _c.TILE_HEIGHT))
+                    tile.get_rect())
 
 class EnvObject():
     def __init__(self, x_pos, y_pos, tile_type):
@@ -70,6 +85,12 @@ class EnvObject():
 
     def highlight(self):
         self.highlighted = True
+
+    def get_rect(self):
+        return self.x_pos, self.y_pos, _c.TILE_WIDTH, _c.TILE_HEIGHT
+
+    def set_tile_sprite(self, tile):
+        self.sprite = _c.TILE_IMAGES.get(tile, _c.DEFAULT_TILE)
 
     def __repr__(self):
         return "tile {} at {},{}".format(self.tile_type, self.x_pos, self.y_pos)
