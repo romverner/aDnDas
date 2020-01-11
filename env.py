@@ -36,6 +36,7 @@ class MapObject():
                 self.log.debug("row {}, col {} -- {}".format(row_idx, col_idx, tile))
 
     def get_tile_at_pos(self, pos):
+        x_pos, y_pos = pos
         x_pos = x_pos - self.x_pos
         y_pos = y_pos - self.y_pos
         col_idx = math.floor(x_pos / self.width * self.width_in_tiles)

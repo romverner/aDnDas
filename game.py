@@ -61,7 +61,7 @@ class aDnDias:
             for event in pygame.event.get():
                 self.log.debug("handling event: {}".format(event))
                 if event.type == pygame.QUIT:
-                    status = _c.QUIT_STATUS
+                    self.status = _c.QUIT_STATUS
                     self.log.debug("quitting game")
                 if event.type == pygame.KEYDOWN:
                     self.keypress_event_handler(event)
