@@ -8,6 +8,7 @@ import map_object
 import constants as _c
 import utils
 import soundboard 
+import game_button
 
 class aDnDias:
     def __init__(self):
@@ -29,15 +30,33 @@ class aDnDias:
         self.mouse_clicked = False
 
         # buttons
-        b1 = PGButton(x_pos=20, y_pos=350, width=100, height=35, text='hello', 
-            disp=self.disp, log=self.log)
+        self.buttons = []
+        b1 = game_button.PGButton(x_pos=20, 
+                y_pos=350, 
+                width=100, 
+                height=35, 
+                text='im old gregg', 
+                disp=self.disp, 
+                log=self.log)
+        self.buttons.append(b1)
+
 
     def mouse_up_handler(self, event):
         self.mouse_clicked = False
         self.mo.set_tile_at_position(event.pos, self.tile_update_type)
 
+        # check through all buttons being tracked, act if they are clicked
+        for b in self.buttons:
+            if b.check_collision(event.pos):
+                b.mouse_up_event()
+
     def mouse_down_handler(self, event):
         self.mouse_clicked = True
+
+        # check through all buttons being tracked, act if they are clicked
+        for b in self.buttons:
+            if b.check_collision(event.pos):
+                b.mouse_down_event()
 
     def mouse_motion_clicked_handler(self, event):
         self.mo.set_tile_at_position(event.pos, self.tile_update_type)
