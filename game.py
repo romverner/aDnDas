@@ -32,6 +32,10 @@ class aDnDias:
         self.tile_update_type = 'floor'
         self.mouse_clicked = False
 
+        # buttons
+        b1 = PGButton(x_pos=20, y_pos=350, width=100, height=35, text='hello', 
+            disp=self.disp, log=self.log)
+
     def mouse_up_handler(self, event):
         self.mouse_clicked = False
         self.mo.set_tile_at_position(event.pos, self.tile_update_type)
