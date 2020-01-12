@@ -70,7 +70,8 @@ class aDnDias:
 
                     
                 if event.type in _c.UNUSED_EVENTS:
-                    self.log.debug("captured unused event of type: {}".format(event.type))
+                    self.log.debug("captured unused event of type: {}"
+                        .format(event.type))
 
             # wait for the next frame
             pygame.display.update()
