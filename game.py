@@ -10,6 +10,7 @@ import utils
 import soundboard 
 import game_button
 import button_grid
+import pg_title
 
 class aDnDias:
     def __init__(self):
@@ -20,44 +21,158 @@ class aDnDias:
         self.clock = pygame.time.Clock()
         self.disp = pygame.display.set_mode((_c.DISP_WIDTH, _c.DISP_HEIGHT))
         pygame.display.set_caption(_c.TITLE_STR)
+        self.buttons = []
         self.disp.fill(_c.BG_COLOR)
-        self.mo = map_object.MapObject(game_disp=self.disp, log=self.log)
-        self.mo.render()
-        self.sounds = soundboard.Soundboard()
 
         # game status variables
         self.status = _c.RUNNING_STATUS
         self.tile_update_type = 'floor'
         self.mouse_clicked = False
-
-        # buttons
-        self.buttons = []
-        b1 = game_button.PGButton(
-                x_pos=20, 
-                y_pos=450, 
-                width=100, 
-                height=35, 
-                text='im old gregg',
-                expand=True, 
+        
+        # mapping region
+        self.mo = map_object.MapObject(
+            x_pos=_c.GRID_WIDTH*1,
+            y_pos=_c.GRID_HEIGHT*1,
+            width=_c.GRID_WIDTH*10,
+            height=_c.GRID_HEIGHT*5,
+            game_disp=self.disp, 
+            log=self.log)
+        self.mo.render()
+        
+        # soundboard section
+        self.sounds = soundboard.Soundboard()
+        sb_title = pg_title.PgTitle(
+            x_pos=_c.GRID_WIDTH*1, 
+            y_pos=_c.GRID_HEIGHT*12, 
+            width=_c.GRID_WIDTH*10, 
+            height=_c.GRID_HEIGHT*1, 
+            text="Soundboard",
+            font_height=0.4,
+            color=_c.BG_COLOR, 
+            disp=self.disp, 
+            log=self.log)
+        soundboard_bg = button_grid.ButtonGrid(
+                n_rows=2, 
+                n_cols=10, 
+                col_width=_c.GRID_WIDTH*1, 
+                row_height=_c.GRID_HEIGHT*1,
+                label_list=[
+                    'Start 1', 'Stop 1', 
+                    'Start 2', 'Stop 2', 
+                    'Start 3', 'Stop 3', 
+                    'Start 4', 'Stop 4', 
+                    'Start 5', 'Stop 5', 
+                    'Start 6', 'Stop 6', 
+                    'Start 7', 'Stop 7', 
+                    'Start 8', 'Stop 8', 
+                    'Start 9', 'Stop 9', 
+                    'Start 10', 'Stop 10', 
+                ],
+                callback_list=[None]*20, 
                 disp=self.disp, 
-                log=self.log)
-        self.buttons.append(b1)
-        bg = button_grid.ButtonGrid(
-                n_rows=3, 
-                n_cols=3, 
-                col_width=100, 
-                row_height=33,
-                label_list=['a','b',None,'a','b','c',None,'quit'],
-                callback_list=[None]*8, 
-                disp=self.disp, 
-                x_pos=200, 
-                y_pos=450, 
+                x_pos=_c.GRID_WIDTH*1, 
+                y_pos=_c.GRID_HEIGHT*13, 
                 fit_to_text=False, 
                 x_pad=10, 
                 y_pad=10, 
                 log=self.log)
-        self.buttons.extend(bg.get_buttons())
+        self.buttons.extend(soundboard_bg.get_buttons())
 
+        # token section
+        token_title = pg_title.PgTitle(
+            x_pos=_c.GRID_WIDTH*1, 
+            y_pos=_c.GRID_HEIGHT*7, 
+            width=_c.GRID_WIDTH*4, 
+            height=_c.GRID_HEIGHT*1, 
+            text="Token Status", 
+            font_height=0.4,
+            color=_c.BG_COLOR,
+            disp=self.disp, 
+            log=self.log)
+        token_sprite = pg_title.PgTitle(
+            x_pos=_c.GRID_WIDTH*1, 
+            y_pos=_c.GRID_HEIGHT*8, 
+            width=_c.GRID_WIDTH*2, 
+            height=_c.GRID_HEIGHT*2, 
+            text="TOKEN SPRITE", 
+            font_height=0.1,
+            disp=self.disp, 
+            log=self.log)
+        token_hp = pg_title.PgTitle(
+            x_pos=_c.GRID_WIDTH*1, 
+            y_pos=_c.GRID_HEIGHT*10, 
+            width=_c.GRID_WIDTH*2, 
+            height=_c.GRID_HEIGHT*1,
+            color=_c.BG_COLOR, 
+            font_height=0.33,
+            text="HP: #/#", 
+            disp=self.disp, 
+            log=self.log)
+        token_bg = button_grid.ButtonGrid(
+                n_rows=3, 
+                n_cols=1, 
+                col_width=_c.GRID_WIDTH*2, 
+                row_height=_c.GRID_HEIGHT*1,
+                label_list=['Set HP', 'Damage', 'Heal'],
+                callback_list=[None]*3, 
+                disp=self.disp, 
+                x_pos=_c.GRID_WIDTH*3, 
+                y_pos=_c.GRID_HEIGHT*8, 
+                fit_to_text=False, 
+                x_pad=10, 
+                y_pad=10, 
+                log=self.log)
+        self.buttons.extend(token_bg.get_buttons())
+
+        # Map Selection
+        map_title = pg_title.PgTitle(
+            x_pos=_c.GRID_WIDTH*6, 
+            y_pos=_c.GRID_HEIGHT*7, 
+            width=_c.GRID_WIDTH*3, 
+            height=_c.GRID_HEIGHT*1, 
+            text="Map Editor",
+            font_height=0.4,
+            color=_c.BG_COLOR, 
+            disp=self.disp, 
+            log=self.log)
+        map_tile_table = pg_title.PgTitle(
+            x_pos=_c.GRID_WIDTH*6, 
+            y_pos=_c.GRID_HEIGHT*8, 
+            width=_c.GRID_WIDTH*3, 
+            height=_c.GRID_HEIGHT*3, 
+            font_height=0.1,
+            text="MAP TILE SELECTION", 
+            disp=self.disp, 
+            log=self.log)
+
+        # User Buttons
+        user_bg = button_grid.ButtonGrid(
+                n_rows=4, 
+                n_cols=1, 
+                col_width=_c.GRID_WIDTH*1, 
+                row_height=_c.GRID_HEIGHT*1,
+                label_list=['Save', 'Load', None, 'Quit'],
+                callback_list=[self.save, self.load, None, self.quit], 
+                disp=self.disp, 
+                x_pos=_c.GRID_WIDTH*10, 
+                y_pos=_c.GRID_HEIGHT*7, 
+                fit_to_text=False, 
+                x_pad=10, 
+                y_pad=10, 
+                log=self.log)
+        self.buttons.extend(user_bg.get_buttons())
+
+    def quit(self):
+        self.log.info("attempting to quit game")
+        self.status = _c.QUIT_STATUS
+
+    def save(self):
+        self.log.info("request to save game")
+        self.log.warn("NOT YET IMPLEMENTED!")
+
+    def load(self):
+        self.log.info("request to load previous state")
+        self.log.warn("NOT YET IMPLEMENTED!")
 
     def mouse_up_handler(self, event):
         self.mouse_clicked = False
@@ -105,8 +220,6 @@ class aDnDias:
     def run(self):
         self.log.info("about to start main loop")
         while self.status not in [_c.QUIT_STATUS, _c.CRASHED_STATUS]:
-            # do things here that reflect game updates
-
             # event handlers
             for event in pygame.event.get():
                 if not event.type == pygame.MOUSEMOTION:

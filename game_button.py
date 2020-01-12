@@ -10,7 +10,7 @@ class PGButton:
             callback=None, log=logging.getLogger(), color=_c.BUTTON_COLOR,
             click_color=_c.DEPRESSED_BUTTON, border_color=_c.BORDER_COLOR,
             click_border_color=_c.DEPRESSED_BORDER, border_width=4,
-            text_color=_c.BUTTON_TEXT_COLOR, 
+            text_color=_c.BUTTON_TEXT_COLOR, font_height=0.33,
             click_text_color=_c.DEPRESSED_TEXT_COLOR):
         self.callback = callback
         self.log = log
@@ -31,7 +31,7 @@ class PGButton:
         self.button_border = None
         self.button_top = None
         self.expand = expand
-        self.font = pygame.font.Font('freesansbold.ttf', int(self.height*0.66))
+        self.font = pygame.font.Font('freesansbold.ttf', int(self.height*font_height))
 
         self.draw_unclicked()
 

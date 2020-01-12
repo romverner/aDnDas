@@ -2,11 +2,17 @@ import pygame
 
 # game parameters
 FPS = 60 # frame rate of the game
-DISP_WIDTH = 800
-DISP_HEIGHT = 800
+DISP_WIDTH = 850
+DISP_HEIGHT = 1000
 TILE_WIDTH = DISP_WIDTH//40
 TILE_HEIGHT = TILE_WIDTH
 TITLE_STR = "a-D'n'D-ias"
+
+# grid spacing
+NUM_GRID_ROWS = 16
+NUM_GRID_COLS = 12
+GRID_HEIGHT = int(DISP_HEIGHT//NUM_GRID_ROWS)
+GRID_WIDTH = int(DISP_WIDTH//NUM_GRID_COLS)
 
 # colors
 BG_COLOR = (102, 102, 153)

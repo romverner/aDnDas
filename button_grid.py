@@ -11,7 +11,7 @@ class ButtonGrid:
             click_color=_c.DEPRESSED_BUTTON, border_color=_c.BORDER_COLOR,
             click_border_color=_c.DEPRESSED_BORDER, border_width=4,
             text_color=_c.BUTTON_TEXT_COLOR, box_color=_c.FG_COLOR,
-            click_text_color=_c.DEPRESSED_TEXT_COLOR,
+            click_text_color=_c.DEPRESSED_TEXT_COLOR, font_height=0.2,
             box_border_color=_c.FG_BORDER_COLOR):
         """
         A class to manage a group of buttons that should be spaced out into a 
@@ -34,6 +34,7 @@ class ButtonGrid:
         x_pad: spacing between columns in pixels
         y_pad: blank spacing between rows in pixels
         log: logging module instance to write to
+        font_height: percent of the height of the button font should be
         
         NOTE: the remainder of the arguments specify the colors and borders in
               the grid. Each of the color arguments should be provided as an
@@ -70,9 +71,11 @@ class ButtonGrid:
         self.x_pos = x_pos
         self.y_pos = y_pos
         self.border_width = border_width
-        self.box_width = n_cols * (x_pad+col_width) + 2*border_width + x_pad
-        self.box_height = n_rows * (y_pad+row_height) + 2*border_width + y_pad
+        self.box_width = n_cols * col_width
+        self.box_height = n_rows * row_height
         self.draw_boundary_box()
+        button_height = row_height - y_pad
+        button_width = col_width - x_pad
 
         # iterate through the rows and columns in column-major order
         for col in range(n_cols):
@@ -81,15 +84,17 @@ class ButtonGrid:
                 if label_list[button_idx] is not None:
                     self.buttons.append(
                         game_button.PGButton(
-                            x_pos=x_pos+border_width+x_pad+(x_pad+col_width)*col, 
-                            y_pos=y_pos+border_width+y_pad+(y_pad+row_height)*row, 
-                            width=col_width, 
-                            height=row_height, 
+                            x_pos=x_pos+x_pad/2+(x_pad+button_width)*col, 
+                            y_pos=y_pos+y_pad/2+(y_pad+button_height)*row, 
+                            width=button_width, 
+                            height=button_height, 
                             text=label_list[button_idx],
+                            callback=callback_list[button_idx],
                             expand=False, 
                             disp=disp, 
                             log=log,
                             color=color,
+                            font_height=font_height,
                             click_color=click_color, 
                             border_color=border_color,
                             click_border_color=click_border_color, 
