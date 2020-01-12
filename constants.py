@@ -37,7 +37,7 @@ TILE_IMAGES = {
     SE_WALL: (51, 51, 51),
     SW_WALL: (51, 51, 51), 
     FLOOR: (51, 153, 102),
-    WATER: (0, 51, 204),
+    WATER: 'resources/images/water.jpg',
     NO_TEXTURE: DEFAULT_TILE,
     HIGHLIGHTED: (255, 255, 255)
 }
@@ -53,6 +53,9 @@ QUIT_STATUS = 'quit game'
 
 # event types
 UNUSED_EVENTS = [pygame.KEYDOWN]
+
+# music urls
+MEGALOVANIA = 'https://archive.org/download/TobyFoxMegalovania/Toby%20Fox%20-%20Megalovania.mp3'
 
 # error types
 # ...

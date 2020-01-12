@@ -2,17 +2,12 @@
 import pygame
 import logging
 
-# vlc player must be installed on local machine
-import vlc
-
 # local imports
 import env
 import map_object
 import constants as _c
 import utils
-
-# Megalovania
-p = vlc.MediaPlayer('https://archive.org/download/TobyFoxMegalovania/Toby%20Fox%20-%20Megalovania.mp3')
+import soundboard 
 
 class aDnDias:
     def __init__(self):
@@ -26,6 +21,7 @@ class aDnDias:
         self.disp.fill(_c.BG_COLOR)
         self.mo = map_object.MapObject(game_disp=self.disp, log=self.log)
         self.mo.render()
+        self.sounds = soundboard.Soundboard()
 
         # game status variables
         self.status = _c.RUNNING_STATUS
@@ -98,5 +94,4 @@ class aDnDias:
 
 if __name__ == "__main__":
     myGame = aDnDias()
-    p.play()
     myGame.run()
