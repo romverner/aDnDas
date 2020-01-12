@@ -1,7 +1,7 @@
 import pygame
 
 # game parameters
-FPS = 24 # frame rate of the game
+FPS = 60 # frame rate of the game
 DISP_WIDTH = 800
 DISP_HEIGHT = 400
 TILE_WIDTH = DISP_WIDTH//40

@@ -2,11 +2,17 @@
 import pygame
 import logging
 
+# vlc player must be installed on local machine
+import vlc
+
 # local imports
 import env
+import map_object
 import constants as _c
 import utils
 
+# Megalovania
+p = vlc.MediaPlayer('https://archive.org/download/TobyFoxMegalovania/Toby%20Fox%20-%20Megalovania.mp3')
 
 class aDnDias:
     def __init__(self):
@@ -18,16 +24,23 @@ class aDnDias:
         self.disp = pygame.display.set_mode((_c.DISP_WIDTH, _c.DISP_HEIGHT))
         pygame.display.set_caption(_c.TITLE_STR)
         self.disp.fill(_c.BG_COLOR)
-        self.mo = env.MapObject(game_disp=self.disp, log=self.log)
+        self.mo = map_object.MapObject(game_disp=self.disp, log=self.log)
         self.mo.render()
 
         # game status variables
         self.status = _c.RUNNING_STATUS
         self.tile_update_type = 'floor'
+        self.mouse_clicked = False
 
-    def mouse_motion_handler(self, event):
-        self.mo.get_tile_at_pos(event.pos).highlight()
-        self.mo.render()
+    def mouse_up_handler(self, event):
+        self.mouse_clicked = False
+        self.mo.set_tile_at_position(event.pos, self.tile_update_type)
+
+    def mouse_down_handler(self, event):
+        self.mouse_clicked = True
+
+    def mouse_motion_clicked_handler(self, event):
+        self.mo.set_tile_at_position(event.pos, self.tile_update_type)
 
     def keypress_event_handler(self, event):
         self.log.debug("key was pressed")
@@ -59,15 +72,19 @@ class aDnDias:
 
             # event handlers
             for event in pygame.event.get():
-                self.log.debug("handling event: {}".format(event))
+                if not event.type == pygame.MOUSEMOTION:
+                    self.log.debug("handling event: {}".format(event))
                 if event.type == pygame.QUIT:
                     self.status = _c.QUIT_STATUS
                     self.log.debug("quitting game")
                 if event.type == pygame.KEYDOWN:
                     self.keypress_event_handler(event)
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.mouse_up_handler(event)
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.mouse_motion_handler(event)
-
+                    self.mouse_down_handler(event)
+                if event.type == pygame.MOUSEMOTION and self.mouse_clicked:
+                    self.mouse_motion_clicked_handler(event)
                     
                 if event.type in _c.UNUSED_EVENTS:
                     self.log.debug("captured unused event of type: {}"
@@ -82,4 +99,5 @@ class aDnDias:
 
 if __name__ == "__main__":
     myGame = aDnDias()
+    p.play()
     myGame.run()
