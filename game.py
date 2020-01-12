@@ -1,6 +1,9 @@
 # pypi imports
+import os
+import psutil
 import pygame
 import logging
+import argparse
 
 # local imports
 import env
@@ -13,8 +16,10 @@ import button_grid
 import pg_title
 
 class aDnDias:
-    def __init__(self):
-        self.log = utils.logging_init()
+    def __init__(self, log_level=logging.WARN):
+        self.log = utils.logging_init(log_level=log_level)
+        self.run_loop_debug_count = 0
+        self.process = psutil.Process(os.getpid())
 
         # set up the game window and resources 
         pygame.init()
@@ -240,13 +245,32 @@ class aDnDias:
                     self.log.debug("captured unused event of type: {}"
                         .format(event.type))
 
-            # wait for the next frame
+            # draw everything that's happened
             pygame.display.update()
+
+            if self.run_loop_debug_count == _c.FRAMES_PER_DEBUG:
+                # perform debuggin actions here
+                self.run_loop_debug_count = 0
+                mem_B = self.process.memory_info().rss
+                mem_mB =  mem_B // (2**20)
+                self.log.debug("memory usage: {} B ({} MB)".format(mem_B, mem_mB))
+            else:
+                self.run_loop_debug_count += 1
+            
+            # wait for the next frame
             self.clock.tick(_c.FPS)
 
         pygame.quit()
 
 
 if __name__ == "__main__":
-    myGame = aDnDias()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-v', action='store_true', default=False)
+    args = parser.parse_args()
+
+    if args.v:
+        log_level = logging.DEBUG
+    else:
+        log_level = logging.WARN
+    myGame = aDnDias(log_level=log_level)
     myGame.run()
