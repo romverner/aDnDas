@@ -3,7 +3,7 @@ import pygame
 # game parameters
 FPS = 60 # frame rate of the game
 DISP_WIDTH = 800
-DISP_HEIGHT = 400
+DISP_HEIGHT = 800
 TILE_WIDTH = DISP_WIDTH//40
 TILE_HEIGHT = TILE_WIDTH
 TITLE_STR = "a-D'n'D-ias"
@@ -11,6 +11,7 @@ TITLE_STR = "a-D'n'D-ias"
 # colors
 BG_COLOR = (102, 102, 153)
 FG_COLOR = (51, 102, 153)
+FG_BORDER_COLOR = (25, 51, 76)
 BUTTON_COLOR = (102, 153, 153)
 DEFAULT_TILE = (204, 0, 153)
 DEPRESSED_BUTTON = tuple([val*0.8 for val in BUTTON_COLOR])

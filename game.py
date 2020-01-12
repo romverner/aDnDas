@@ -9,6 +9,7 @@ import constants as _c
 import utils
 import soundboard 
 import game_button
+import button_grid
 
 class aDnDias:
     def __init__(self):
@@ -31,14 +32,31 @@ class aDnDias:
 
         # buttons
         self.buttons = []
-        b1 = game_button.PGButton(x_pos=20, 
-                y_pos=350, 
+        b1 = game_button.PGButton(
+                x_pos=20, 
+                y_pos=450, 
                 width=100, 
                 height=35, 
-                text='im old gregg', 
+                text='im old gregg',
+                expand=True, 
                 disp=self.disp, 
                 log=self.log)
         self.buttons.append(b1)
+        bg = button_grid.ButtonGrid(
+                n_rows=3, 
+                n_cols=3, 
+                col_width=100, 
+                row_height=33,
+                label_list=['a','b',None,'a','b','c',None,'quit'],
+                callback_list=[None]*8, 
+                disp=self.disp, 
+                x_pos=200, 
+                y_pos=450, 
+                fit_to_text=False, 
+                x_pad=10, 
+                y_pad=10, 
+                log=self.log)
+        self.buttons.extend(bg.get_buttons())
 
 
     def mouse_up_handler(self, event):

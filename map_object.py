@@ -10,7 +10,7 @@ class MapObject():
             game_disp,
             log,
             width=_c.DISP_WIDTH*0.8, 
-            height=_c.DISP_HEIGHT*0.6, 
+            height=_c.DISP_HEIGHT*0.4, 
             x_pos=_c.DISP_WIDTH*0.1, 
             y_pos=_c.DISP_HEIGHT*0.1):
         self.width = width
