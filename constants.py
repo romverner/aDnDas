@@ -1,3 +1,5 @@
+import os
+import glob
 import pygame
 
 # game parameters
@@ -26,6 +28,7 @@ BORDER_COLOR = (51, 76, 76)
 DEPRESSED_BORDER = BORDER_COLOR
 BUTTON_TEXT_COLOR = (190, 190, 190)
 DEPRESSED_TEXT_COLOR =tuple([val*0.8 for val in BUTTON_TEXT_COLOR])
+DEFAULT_SPRITE_BACKGROUND = (200, 200, 200)
 
 # types
 W_WALL = 'west_wall'
@@ -61,8 +64,17 @@ TILE_ORDER = [W_WALL, E_WALL, S_WALL, N_WALL, NW_WALL,
 # status options for the state of the game
 RUNNING_STATUS = 'running'
 ERROR_STATUS = 'error'
-CRASHED_STATUS = 'crashed'
 QUIT_STATUS = 'quit game'
+
+# sprite constants
+AVAILABLE_SPRITES = glob.glob(
+        os.path.join(os.path.dirname(os.path.realpath(__file__)),
+            'resources', 'sprites', '*.png')
+    )
+MISSING_SPRITE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+            'resources', 'sprites', 'missing.png')
+TEMP_IMAGE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+            'resources', 'sprites', 'temp')
 
 # event types
 UNUSED_EVENTS = [pygame.KEYDOWN]

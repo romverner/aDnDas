@@ -2,6 +2,7 @@
 import os
 import psutil
 import pygame
+import random
 import logging
 import argparse
 
@@ -14,6 +15,7 @@ import soundboard
 import game_button
 import button_grid
 import pg_title
+import image_grid_cell
 
 class aDnDias:
     def __init__(self, log_level=logging.WARN):
@@ -94,13 +96,13 @@ class aDnDias:
             color=_c.BG_COLOR,
             disp=self.disp, 
             log=self.log)
-        token_sprite = pg_title.PgTitle(
+        token_sprite = image_grid_cell.ImageCell(
+            img_path=random.choice(_c.AVAILABLE_SPRITES),
+            border_width=4,
             x_pos=_c.GRID_WIDTH*1, 
             y_pos=_c.GRID_HEIGHT*8, 
             width=_c.GRID_WIDTH*2, 
             height=_c.GRID_HEIGHT*2, 
-            text="TOKEN SPRITE", 
-            font_height=0.1,
             disp=self.disp, 
             log=self.log)
         token_hp = pg_title.PgTitle(
@@ -152,15 +154,15 @@ class aDnDias:
 
         # User Buttons
         user_bg = button_grid.ButtonGrid(
-                n_rows=4, 
+                n_rows=3, 
                 n_cols=1, 
                 col_width=_c.GRID_WIDTH*1, 
                 row_height=_c.GRID_HEIGHT*1,
-                label_list=['Save', 'Load', None, 'Quit'],
-                callback_list=[self.save, self.load, None, self.quit], 
+                label_list=['Save', 'Load', 'Quit'],
+                callback_list=[self.save, self.load, self.quit], 
                 disp=self.disp, 
                 x_pos=_c.GRID_WIDTH*10, 
-                y_pos=_c.GRID_HEIGHT*7, 
+                y_pos=_c.GRID_HEIGHT*8, 
                 fit_to_text=False, 
                 x_pad=10, 
                 y_pad=10, 
@@ -224,7 +226,7 @@ class aDnDias:
 
     def run(self):
         self.log.info("about to start main loop")
-        while self.status not in [_c.QUIT_STATUS, _c.CRASHED_STATUS]:
+        while self.status not in [_c.QUIT_STATUS]:
             # event handlers
             for event in pygame.event.get():
                 if not event.type == pygame.MOUSEMOTION:
@@ -266,10 +268,13 @@ class aDnDias:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', action='store_true', default=False)
+    parser.add_argument('-vvv', action='store_true', default=False)
     args = parser.parse_args()
 
-    if args.v:
+    if args.vvv:
         log_level = logging.DEBUG
+    elif args.v:
+        log_level = logging.INFO
     else:
         log_level = logging.WARN
     myGame = aDnDias(log_level=log_level)
