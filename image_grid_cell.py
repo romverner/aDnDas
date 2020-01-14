@@ -42,6 +42,8 @@ class ImageCell:
             self.orig_img_path, 
             self.img_path
         )
+
+        # make sure that the temporary files are cleaned on exit
         atexit.register(self.__delete__)
 
         # initial render
@@ -113,17 +115,21 @@ class ImageCell:
             self.resize_img(self.width, self.height)
 
         # draw rectangles for the image cell
-        self.button_border = pygame.draw.rect(self.disp,  
-                self.border_color,
-                self.get_rect())
-        self.button_top = pygame.draw.rect(self.disp,
-                self.bg_color,
-                (   self.x_pos+self.border_width, 
-                    self.y_pos+self.border_width, 
-                    self.width-2*self.border_width, 
-                    self.height-2*self.border_width
-                )
-                )
+        self.button_border = pygame.draw.rect(
+            self.disp,  
+            self.border_color,
+            self.get_rect()
+        )
+        self.button_top = pygame.draw.rect(
+            self.disp,
+            self.bg_color,
+            (   
+                self.x_pos+self.border_width, 
+                self.y_pos+self.border_width, 
+                self.width-2*self.border_width, 
+                self.height-2*self.border_width
+            )
+        )
 
         # reposition the image
         self.disp.blit(
