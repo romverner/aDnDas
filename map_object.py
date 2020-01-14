@@ -4,6 +4,7 @@ import math
 import constants as _c
 
 from env import EnvObject
+from image_grid_cell import ImageCell
 
 class MapObject():
     def __init__(self, 
@@ -25,11 +26,17 @@ class MapObject():
         for row in range(self.height_in_tiles):
             self.tiles.append([])
             for col in range(self.width_in_tiles):
-                self.tiles[-1].append(EnvObject(x_pos = self.x_pos + _c.TILE_WIDTH * col,
-                                                y_pos = self.y_pos + _c.TILE_HEIGHT * row,
-                                                tile_type = _c.FLOOR
-                                            )
-                                      )
+                self.tiles[-1].append(ImageCell(
+                    x_pos=self.x_pos + _c.TILE_WIDTH * col, 
+                    y_pos=self.y_pos + _c.TILE_HEIGHT * row, 
+                    width=_c.TILE_WIDTH, 
+                    height=_c.TILE_HEIGHT, 
+                    img_path=_c.TILE_IMAGES.get(_c.FLOOR), 
+                    disp=self.disp, 
+                    log=self.log,
+                    border_color=_c.BORDER_COLOR,
+                    border_width=1
+                ))
 
         for row_idx, row in enumerate(self.tiles):
             for col_idx, tile in enumerate(row):
@@ -53,15 +60,11 @@ class MapObject():
     def set_tile_at_position(self, pos, tile):
         selected_tile = self.get_tile_at_pos(pos)
         if selected_tile is not None:
-            selected_tile.set_tile_sprite(tile)
-            pygame.draw.rect(self.disp, selected_tile.get_sprite(), 
-                selected_tile.get_rect())
+            selected_tile.set_tile_sprite(_c.TILE_IMAGES.get(tile))
+            selected_tile.draw()
 
     def render(self):
         self.log.debug("about to render tiles onto board")
         for row in self.tiles:
             for tile in row:
-                self.log.debug(tile.get_sprite())
-                pygame.draw.rect(self.disp,
-                    tile.get_sprite(),
-                    tile.get_rect())
+                tile.draw()

@@ -6,7 +6,7 @@ import pygame
 FPS = 60 # frame rate of the game
 DISP_WIDTH = 850
 DISP_HEIGHT = 1000
-TILE_WIDTH = DISP_WIDTH//40
+TILE_WIDTH = DISP_WIDTH//20
 TILE_HEIGHT = TILE_WIDTH
 TITLE_STR = "a-D'n'D-ias"
 FRAMES_PER_DEBUG = 60
@@ -25,6 +25,7 @@ BUTTON_COLOR = (102, 153, 153)
 DEFAULT_TILE = (204, 0, 153)
 DEPRESSED_BUTTON = tuple([val*0.8 for val in BUTTON_COLOR])
 BORDER_COLOR = (51, 76, 76)
+HIGHLIGHT_BORDER_COLOR = (140, 140, 140)
 DEPRESSED_BORDER = BORDER_COLOR
 BUTTON_TEXT_COLOR = (190, 190, 190)
 DEPRESSED_TEXT_COLOR =tuple([val*0.8 for val in BUTTON_TEXT_COLOR])
@@ -44,15 +45,15 @@ WATER = 'water'
 NO_TEXTURE = 'default'
 HIGHLIGHTED = 'highlighted'
 TILE_IMAGES = {
-    W_WALL: (51, 51, 51),
-    E_WALL: (51, 51, 51),
-    N_WALL: (51, 51, 51),
-    S_WALL: (51, 51, 51),
-    NE_WALL: (51, 51, 51),
-    NW_WALL: (51, 51, 51),
-    SE_WALL: (51, 51, 51),
-    SW_WALL: (51, 51, 51), 
-    FLOOR: (51, 153, 102),
+    W_WALL: 'resources/images/w_wall.png',
+    E_WALL: 'resources/images/e_wall.png',
+    N_WALL: 'resources/images/n_wall.png',
+    S_WALL: 'resources/images/s_wall.png',
+    NE_WALL: 'resources/images/ne_wall.png',
+    NW_WALL: 'resources/images/nw_wall.png',
+    SE_WALL: 'resources/images/se_wall.png',
+    SW_WALL: 'resources/images/sw_wall.png', 
+    FLOOR: 'resources/images/floor.png',
     WATER: 'resources/images/water.jpg',
     NO_TEXTURE: DEFAULT_TILE,
     HIGHLIGHTED: (255, 255, 255)

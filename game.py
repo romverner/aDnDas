@@ -223,6 +223,8 @@ class aDnDias:
             self.tile_update_type = _c.TILE_ORDER[8]
         if event.key == pygame.K_9:
             self.tile_update_type = _c.TILE_ORDER[9]
+        self.log.debug("tiles will update to: {}"
+            .format(_c.TILE_IMAGES.get(self.tile_update_type)))
 
     def run(self):
         self.log.info("about to start main loop")

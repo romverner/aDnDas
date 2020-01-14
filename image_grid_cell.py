@@ -28,27 +28,21 @@ class ImageCell:
         self.border_color = border_color
         self.border_width = border_width
         self.expand = expand
-        
-        # error checking
-        if not os.path.isfile(img_path):
-            self.log.warn("missing sprite file. {} not found".format(img_path))
-            self.orig_img_path = _c.MISSING_SPRITE_PATH
-
-        # move the image to a new temp location to perform adjustments
-        if not os.path.isdir(_c.TEMP_IMAGE_DIR):
-            os.mkdir(_c.TEMP_IMAGE_DIR)
-        self.img_path = self.make_temp_path()
-        shutil.copyfile(
-            self.orig_img_path, 
-            self.img_path
-        )
+        self.highlighted = False
+        self.img_path = None
+        self.set_tile_sprite(img_path)
 
         # make sure that the temporary files are cleaned on exit
         atexit.register(self.__delete__)
 
         # initial render
-        self.img = pygame.image.load(self.img_path)
         self.draw(width=self.width, height=self.height) # force resize
+
+    def hightlight(self):
+        self.highlighted = True
+
+    def dehighlight(self):
+        self.highlighted = False
 
     def make_temp_path(self):
         """
@@ -115,9 +109,14 @@ class ImageCell:
             self.resize_img(self.width, self.height)
 
         # draw rectangles for the image cell
+        if self.highlighted:
+            bcolor = _c.HIGHLIGHT_BORDER_COLOR
+        else:
+            bcolor = self.border_color
+
         self.button_border = pygame.draw.rect(
             self.disp,  
-            self.border_color,
+            bcolor,
             self.get_rect()
         )
         self.button_top = pygame.draw.rect(
@@ -137,6 +136,27 @@ class ImageCell:
             (self.x_pos+self.border_width, self.y_pos+self.border_width)
         )
 
+    def set_tile_sprite(self, img_path):
+        # clear any previous temp files that may exist
+        self.__delete__()
+        self.orig_img_path = img_path
+        
+        # error checking
+        if not os.path.isfile(img_path):
+            self.log.warn("missing sprite file. {} not found".format(img_path))
+            self.orig_img_path = _c.MISSING_SPRITE_PATH
+
+        # move the image to a new temp location to perform adjustments
+        if not os.path.isdir(_c.TEMP_IMAGE_DIR):
+            os.mkdir(_c.TEMP_IMAGE_DIR)
+        self.img_path = self.make_temp_path()
+        shutil.copyfile(
+            self.orig_img_path, 
+            self.img_path
+        )
+        self.resize_img(width=self.width, height=self.height)
+        self.img = pygame.image.load(self.img_path)
+
     def get_rect(self):
         return (self.x_pos, self.y_pos, self.width, self.height)
 
@@ -147,7 +167,8 @@ class ImageCell:
         return "image of {}".format(self.orig_img_path)
 
     def __delete__(self):
-        self.log.info("ImageCell is removing temp file at {}"
-            .format(self.img_path)
-        )
-        os.remove(self.img_path)
+        if self.img_path is not None:
+            self.log.info("ImageCell is removing temp file at {}"
+                .format(self.img_path)
+            )
+            os.remove(self.img_path)
