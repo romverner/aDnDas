@@ -16,7 +16,8 @@ class ImageCell:
             expand=False,
             bg_color=_c.DEFAULT_SPRITE_BACKGROUND,
             border_color=_c.BORDER_COLOR,
-            border_width=4):
+            border_width=4,
+            canvas_area=None):
         self.log = log
         self.orig_img_path = img_path
         self.x_pos = x_pos
@@ -31,6 +32,8 @@ class ImageCell:
         self.highlighted = False
         self.img_path = None
         self.set_tile_sprite(img_path)
+        self.draw_area = None
+        self.canvas_area=canvas_area
 
         # make sure that the temporary files are cleaned on exit
         atexit.register(self.__delete__)
@@ -49,27 +52,12 @@ class ImageCell:
         set the clipping region of the drawn resources to the specified
         rectangle (in format of (x, y, width, height)).
         """
-        if self.img is not None:
-            self.img.set_clip(rect)
-
-        # if self.button_top is not None:
-        #     self.button_top.set_clip(rect)
-
-        # if self.button_border is not None:
-        #     self.button_border.set_clip(rect)
+        self.draw_area = rect
 
     def get_clips(self):
-        output = []
-        if self.img is not None:
-            output.append(self.img.get_clip())
+        return self.draw_area
 
-        if self.button_top is not None:
-            output.append(self.button_top.get_clip())
-
-        if self.button_border is not None:
-            output.append(self.button_border.get_clip())
-
-    def scroll_y(self, shift_pixels, update_clip=True):
+    def scroll_y(self, shift_pixels, clip=None):
         """
         transpose the image and boarder in the y axis in units of pixels. 
         Note that a positive argument will move the object down.
@@ -78,8 +66,13 @@ class ImageCell:
         cropping the image.
         """
         self.y_pos += shift_pixels
-        if update_clip:
-            self.set_clip(self.get_rect)
+        if clip is not None:
+            if 'floor' in self.img_path:
+                self.log.info("image path: {}".format(self.orig_img_path))
+                self.log.info("setting new area to {}".format(clip))
+                self.log.info("current rectangle is: {}".format(self.get_rect()))
+                self.log.info("")
+            self.draw_area = clip
         self.draw()
 
     def make_temp_path(self):
@@ -152,27 +145,43 @@ class ImageCell:
         else:
             bcolor = self.border_color
 
+        if self.draw_area is None:
+            border_rect = self.get_rect()
+        else:
+            border_rect = (self.x_pos, self.y_pos+self.draw_area[1],
+                self.draw_area[2], self.draw_area[3])
+        top_rect = (   
+            self.x_pos+self.border_width, 
+            border_rect[1]+self.border_width, 
+            border_rect[2]-2*self.border_width, 
+            border_rect[3]-2*self.border_width
+        )
         self.button_border = pygame.draw.rect(
             self.disp,  
             bcolor,
-            self.get_rect()
+            border_rect
         )
         self.button_top = pygame.draw.rect(
             self.disp,
             self.bg_color,
-            (   
-                self.x_pos+self.border_width, 
-                self.y_pos+self.border_width, 
-                self.width-2*self.border_width, 
-                self.height-2*self.border_width
-            )
+            top_rect
         )
+        if self.canvas_area is not None:
+            self.button_border.clip(self.canvas_area)
+            self.button_top.clip(self.canvas_area)
 
         # reposition the image
-        self.disp.blit(
-            self.img, 
-            (self.x_pos+self.border_width, self.y_pos+self.border_width)
-        )
+        if self.draw_area is None:
+            self.disp.blit(
+                self.img, 
+                (self.x_pos+self.border_width, self.y_pos+self.border_width)
+            )
+        else:
+            self.disp.blit(
+                self.img, 
+                (self.x_pos+self.border_width, self.y_pos+self.border_width),
+                self.draw_area
+            )
 
     def set_tile_sprite(self, img_path):
         # clear any previous temp files that may exist

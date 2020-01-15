@@ -59,12 +59,14 @@ class ScrollGrid:
         self.min_canvas_pos = 0
         self.max_canvas_pos = (self.cell_height+y_pad)*(n_rows-1)
         self.canvas_pos = 0
+        canvas_area = (self.x_pos, self.y_pos, self.width-self.scroll_width, 
+            self.height)
 
-        self.log.info("images: {}".format(img_list))
-        self.log.info("num cells: {}".format(len(img_list)))
-        self.log.info('num rows: {}'.format(n_rows))
-        self.log.info('canvas height: {}'.format(self.canvas_height))
-        self.log.info('cell width: {}'.format(self.cell_width))
+        self.log.debug("images: {}".format(img_list))
+        self.log.debug("num cells: {}".format(len(img_list)))
+        self.log.debug('num rows: {}'.format(n_rows))
+        self.log.debug('canvas height: {}'.format(self.canvas_height))
+        self.log.debug('cell width: {}'.format(self.cell_width))
 
         fraction_visible = self.height / (self.canvas_height)
         if fraction_visible > 1:
@@ -117,7 +119,10 @@ class ScrollGrid:
                         height=self.cell_height,
                         img_path=img_list[img_idx],
                         disp=self.disp,
+                        bg_color=(255,255,255,255),
+                        border_color=(255,255,255,255),
                         log=self.log,
+                        canvas_area=canvas_area,
                         border_width=border_width))
                     self.tile_list[-1].resize_img(
                         width=self.cell_width, height=self.cell_height)
@@ -127,6 +132,27 @@ class ScrollGrid:
         
     def get_buttons(self):
         return [self.up_button, self.down_button]
+    
+    def occlude_frame(self, img):
+        # case 1: image occluded by top of canvas
+        if self.y_pos > img.y_pos:
+            y_canvas = self.y_pos-img.y_pos
+            y_canvas_height = img.height
+
+        # case 1: image occluded by bottom of canvase
+        elif (self.y_pos+self.height) < (img.y_pos+img.height):
+            y_canvas = 0
+            y_canvas_height =  (img.y_pos+img.height) - (self.y_pos+self.height)
+            if y_canvas_height < 0:
+                y_canvas_height = 0
+
+        # case 3: image inside canvas entirely
+        else:
+            y_canvas = img.y_pos
+            y_canvas_height = img.height
+
+        draw_area = (0, y_canvas, img.width, y_canvas_height)
+        return draw_area
 
     def scroll_up(self):
         prev_pos = self.canvas_pos
@@ -134,12 +160,13 @@ class ScrollGrid:
             self.canvas_pos = self.min_canvas_pos
         else:
             self.canvas_pos -= self.scroll_incr
-        self.log.info("canvas pos: {}, limit: {}".format(self.canvas_pos, self.min_canvas_pos))
+        self.log.debug("canvas pos: {}, limit: {}".format(self.canvas_pos, self.min_canvas_pos))
 
         shift = self.canvas_pos - prev_pos
 
         for img in self.tile_list:
-            img.scroll_y(shift_pixels=-1*shift, update_clip=False)
+            draw_area = self.occlude_frame(img)
+            img.scroll_y(shift_pixels=-1*shift, clip=draw_area)
         self.draw()
                 
     def scroll_down(self):
@@ -149,12 +176,13 @@ class ScrollGrid:
         else:
             self.canvas_pos += self.scroll_incr
 
-        self.log.info("canvas pos: {}, limit: {}".format(self.canvas_pos, self.max_canvas_pos))
+        self.log.debug("canvas pos: {}, limit: {}".format(self.canvas_pos, self.max_canvas_pos))
 
         shift = self.canvas_pos - prev_pos
 
         for img in self.tile_list:
-            img.scroll_y(shift_pixels=-1*shift, update_clip=False)
+            draw_area = self.occlude_frame(img)
+            img.scroll_y(shift_pixels=-1*shift,clip=draw_area)
         self.draw()
 
     def get_rect(self):
@@ -186,8 +214,8 @@ class ScrollGrid:
                 self.bg_color,
                 (self.x_pos, self.y_pos, self.width-self.scroll_width, self.height)
             )
-        self.up_button.draw_unclicked()
-        self.down_button.draw_unclicked()
+        #self.up_button.draw_unclicked()
+        #self.down_button.draw_unclicked()
 
         # draw the initial set of tiles
         for img in self.tile_list:
