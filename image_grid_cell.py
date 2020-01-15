@@ -44,6 +44,44 @@ class ImageCell:
     def dehighlight(self):
         self.highlighted = False
 
+    def set_clip(self, rect):
+        """
+        set the clipping region of the drawn resources to the specified
+        rectangle (in format of (x, y, width, height)).
+        """
+        if self.img is not None:
+            self.img.set_clip(rect)
+
+        # if self.button_top is not None:
+        #     self.button_top.set_clip(rect)
+
+        # if self.button_border is not None:
+        #     self.button_border.set_clip(rect)
+
+    def get_clips(self):
+        output = []
+        if self.img is not None:
+            output.append(self.img.get_clip())
+
+        if self.button_top is not None:
+            output.append(self.button_top.get_clip())
+
+        if self.button_border is not None:
+            output.append(self.button_border.get_clip())
+
+    def scroll_y(self, shift_pixels, update_clip=True):
+        """
+        transpose the image and boarder in the y axis in units of pixels. 
+        Note that a positive argument will move the object down.
+        
+        By default, the surface clip will be moved with the scroll to prevent
+        cropping the image.
+        """
+        self.y_pos += shift_pixels
+        if update_clip:
+            self.set_clip(self.get_rect)
+        self.draw()
+
     def make_temp_path(self):
         """
         Helper to avoid conflicts in the temporary directory when multiple cells
@@ -71,7 +109,7 @@ class ImageCell:
         width (the resized image will be 2*border_width smaller in each 
         dimension)
         """
-        self.log.info("resizing image at {} to {}x{}"
+        self.log.debug("resizing image at {} to {}x{}"
             .format(self.img_path, 
                 width-2*self.border_width, 
                 height-2*self.border_width
@@ -140,7 +178,7 @@ class ImageCell:
         # clear any previous temp files that may exist
         self.__delete__()
         self.orig_img_path = img_path
-        
+
         # error checking
         if not os.path.isfile(img_path):
             self.log.warn("missing sprite file. {} not found".format(img_path))
@@ -168,7 +206,7 @@ class ImageCell:
 
     def __delete__(self):
         if self.img_path is not None:
-            self.log.info("ImageCell is removing temp file at {}"
+            self.log.debug("ImageCell is removing temp file at {}"
                 .format(self.img_path)
             )
             os.remove(self.img_path)

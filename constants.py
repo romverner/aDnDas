@@ -58,8 +58,8 @@ TILE_IMAGES = {
     NO_TEXTURE: DEFAULT_TILE,
     HIGHLIGHTED: (255, 255, 255)
 }
-TILE_ORDER = [W_WALL, E_WALL, S_WALL, N_WALL, NW_WALL,
-    SW_WALL, NE_WALL, SE_WALL, FLOOR, WATER    
+TILE_ORDER = [WATER, W_WALL, SW_WALL, S_WALL, SE_WALL, E_WALL,  
+    NE_WALL, N_WALL, NW_WALL, FLOOR,     
 ]
 
 # status options for the state of the game
@@ -71,6 +71,10 @@ QUIT_STATUS = 'quit game'
 AVAILABLE_SPRITES = glob.glob(
         os.path.join(os.path.dirname(os.path.realpath(__file__)),
             'resources', 'sprites', '*.png')
+    )
+AVAILABLE_TILES = glob.glob(
+        os.path.join(os.path.dirname(os.path.realpath(__file__)),
+            'resources', 'images', '*.png')
     )
 MISSING_SPRITE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),
             'resources', 'sprites', 'missing.png')

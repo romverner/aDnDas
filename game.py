@@ -16,6 +16,7 @@ import game_button
 import button_grid
 import pg_title
 import image_grid_cell
+import scroll_grid as sg
 
 class aDnDias:
     def __init__(self, log_level=logging.WARN):
@@ -142,15 +143,18 @@ class aDnDias:
             color=_c.BG_COLOR, 
             disp=self.disp, 
             log=self.log)
-        map_tile_table = pg_title.PgTitle(
+        map_tile_table = sg.ScrollGrid(
             x_pos=_c.GRID_WIDTH*6, 
             y_pos=_c.GRID_HEIGHT*8, 
             width=_c.GRID_WIDTH*3, 
             height=_c.GRID_HEIGHT*3, 
-            font_height=0.1,
-            text="MAP TILE SELECTION", 
+            n_cols=3, 
+            scroll_width=20,
             disp=self.disp, 
+            img_list=_c.AVAILABLE_SPRITES+_c.AVAILABLE_TILES,
+            bg_color=_c.BUTTON_TEXT_COLOR,
             log=self.log)
+        self.buttons.extend(map_tile_table.get_buttons())
 
         # User Buttons
         user_bg = button_grid.ButtonGrid(
