@@ -89,6 +89,7 @@ class ScrollGrid:
                 border_width=border_width,
                 text='v',
                 disp=self.disp,
+                idx_grid=None,
                 callback=self.scroll_down
             )
         
@@ -103,6 +104,7 @@ class ScrollGrid:
                 border_width=border_width,
                 text='^',
                 disp=self.disp,
+                idx_grid=None,
                 callback=self.scroll_up
             )
 
