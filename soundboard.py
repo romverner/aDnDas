@@ -1,9 +1,10 @@
 import vlc
+import logging
 import constants as _c
 
 class Soundboard:
-    def __init__(self):
-
+    def __init__(self, log=logging.getLogger()):
+        self.log = log
         # currently focused index
         self.current_index = 0
         # array for sound file paths
@@ -24,5 +25,6 @@ class Soundboard:
             self.controller_list[self.current_index] = False
 
     def control(self, index_in_arr):
+        self.log.info("index: {}".format(index_in_arr))
         self.current_index = index_in_arr
         self.flip()

@@ -5,6 +5,7 @@ import pygame
 import random
 import logging
 import argparse
+from functools import partial
 
 # local imports
 import env
@@ -48,7 +49,7 @@ class aDnDias:
         self.mo.render()
         
         # soundboard section
-        self.sounds = soundboard.Soundboard()
+        self.sounds = soundboard.Soundboard(log=self.log)
         sb_title = pg_title.PgTitle(
             x_pos=_c.GRID_WIDTH*1, 
             y_pos=_c.GRID_HEIGHT*12, 
@@ -76,7 +77,7 @@ class aDnDias:
                     'Start 9', 'Stop 9', 
                     'Start 10', 'Stop 10', 
                 ],
-                callback_list=[lambda: self.sounds.control(x) for x in range(20)], 
+                callback_list=[partial(self.sounds.control, x) for x in range(20)], 
                 disp=self.disp, 
                 x_pos=_c.GRID_WIDTH*1, 
                 y_pos=_c.GRID_HEIGHT*13, 
