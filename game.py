@@ -76,7 +76,7 @@ class aDnDias:
                     'Start 9', 'Stop 9', 
                     'Start 10', 'Stop 10', 
                 ],
-                callback_list=[None]*20, 
+                callback_list=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19], 
                 disp=self.disp, 
                 x_pos=_c.GRID_WIDTH*1, 
                 y_pos=_c.GRID_HEIGHT*13, 
