@@ -166,7 +166,7 @@ class ScrollGrid:
 
         for img in self.tile_list:
             draw_area = self.occlude_frame(img)
-            img.scroll_y(shift_pixels=-1*shift, clip=draw_area)
+            img.scroll_y(shift_pixels=-1*shift, clip=self.get_rect())
         self.draw()
                 
     def scroll_down(self):
@@ -182,7 +182,7 @@ class ScrollGrid:
 
         for img in self.tile_list:
             draw_area = self.occlude_frame(img)
-            img.scroll_y(shift_pixels=-1*shift,clip=draw_area)
+            img.scroll_y(shift_pixels=-1*shift,clip=self.get_rect())
         self.draw()
 
     def get_rect(self):

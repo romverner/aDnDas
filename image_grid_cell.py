@@ -35,6 +35,9 @@ class ImageCell:
         self.draw_area = None
         self.canvas_area=canvas_area
 
+        if self.canvas_area is not None:
+            self.set_draw_area(self.canvas_area)
+
         # make sure that the temporary files are cleaned on exit
         atexit.register(self.__delete__)
 
@@ -67,13 +70,46 @@ class ImageCell:
         """
         self.y_pos += shift_pixels
         if clip is not None:
-            if 'floor' in self.img_path:
-                self.log.info("image path: {}".format(self.orig_img_path))
-                self.log.info("setting new area to {}".format(clip))
-                self.log.info("current rectangle is: {}".format(self.get_rect()))
-                self.log.info("")
-            self.draw_area = clip
+            self.set_draw_area(clip)
         self.draw()
+
+    def set_draw_area(self, clip):
+        # the top of the image is cut off (but not the whole image)
+        if clip[1] >= self.y_pos and (clip[1]+clip[3]) > (self.y_pos + self.height):
+            self.log.info("cut at top")
+            clip_x = 0
+            clip_y = clip[1] - self.y_pos
+            clip_width = self.width
+            clip_height = self.height - clip[1] + self.y_pos - self.border_width
+        # the bottom of the image is cut off
+        elif (clip[1]+clip[3]) > self.y_pos and (clip[1]+clip[3]) < (self.y_pos+self.height):
+            self.log.info("cut at bottom")
+            clip_x = 0
+            clip_y = 0
+            clip_width = self.width
+            clip_height = (clip[1]+clip[3]) - self.y_pos - self.border_width
+        # the image is entirely outside the bounds
+        elif self.y_pos >= (clip[1]+clip[3]) or (self.y_pos+self.height <= clip[1]):
+            self.log.info("entirely in bounds")
+            clip_x = 0
+            clip_y = 0
+            clip_width = 0
+            clip_height = 0
+        # the image is entirely inside the bounds
+        else:
+            self.log.info('entirely out of bounds')
+            clip_x = 0
+            clip_y = 0
+            clip_width = self.width
+            clip_height = self.height - self.border_width
+        clip_height = max(0, clip_height)
+        img_area = (clip_x, clip_y, clip_width, clip_height)
+        if 'floor' in self.img_path:
+            self.log.info("image path: {}".format(self.orig_img_path))
+            self.log.info("setting new area to {}".format(img_area))
+            self.log.info("current rectangle is: {}".format(self.get_rect()))
+            self.log.info("")
+        self.draw_area = img_area
 
     def make_temp_path(self):
         """
@@ -140,35 +176,35 @@ class ImageCell:
             self.resize_img(self.width, self.height)
 
         # draw rectangles for the image cell
-        if self.highlighted:
-            bcolor = _c.HIGHLIGHT_BORDER_COLOR
-        else:
-            bcolor = self.border_color
+        # if self.highlighted:
+        #     bcolor = _c.HIGHLIGHT_BORDER_COLOR
+        # else:
+        #     bcolor = self.border_color
 
-        if self.draw_area is None:
-            border_rect = self.get_rect()
-        else:
-            border_rect = (self.x_pos, self.y_pos+self.draw_area[1],
-                self.draw_area[2], self.draw_area[3])
-        top_rect = (   
-            self.x_pos+self.border_width, 
-            border_rect[1]+self.border_width, 
-            border_rect[2]-2*self.border_width, 
-            border_rect[3]-2*self.border_width
-        )
-        self.button_border = pygame.draw.rect(
-            self.disp,  
-            bcolor,
-            border_rect
-        )
-        self.button_top = pygame.draw.rect(
-            self.disp,
-            self.bg_color,
-            top_rect
-        )
-        if self.canvas_area is not None:
-            self.button_border.clip(self.canvas_area)
-            self.button_top.clip(self.canvas_area)
+        # if self.draw_area is None:
+        #     border_rect = self.get_rect()
+        # else:
+        #     border_rect = (self.x_pos, self.y_pos+self.draw_area[1],
+        #         self.draw_area[2], self.draw_area[3])
+        # top_rect = (   
+        #     self.x_pos+self.border_width, 
+        #     border_rect[1]+self.border_width, 
+        #     border_rect[2]-2*self.border_width, 
+        #     border_rect[3]-2*self.border_width
+        # )
+        # self.button_border = pygame.draw.rect(
+        #     self.disp,  
+        #     bcolor,
+        #     border_rect
+        # )
+        # self.button_top = pygame.draw.rect(
+        #     self.disp,
+        #     self.bg_color,
+        #     top_rect
+        # )
+        # if self.canvas_area is not None:
+        #     self.button_border.clip(self.canvas_area)
+        #     self.button_top.clip(self.canvas_area)
 
         # reposition the image
         if self.draw_area is None:
