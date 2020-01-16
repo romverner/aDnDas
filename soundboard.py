@@ -14,17 +14,18 @@ class Soundboard:
         # array for start/stop detection
         self.controller_list = [False] * 20
 
-    def flip(self):
-        if self.controller_list[self.current_index] is False:
-            self.vlc_player_list[self.current_index] = vlc.MediaPlayer(
-                self.soundpath_list[self.current_index]).play()
-            self.controller_list[self.current_index] = True
-        else:
-            self.vlc_player_list[self.current_index] = vlc.MediaPlayer(
-                self.soundpath_list[self.current_index]).stop()
-            self.controller_list[self.current_index] = False
+    def flip(self, index_in_arr):
+        if self.controller_list[index_in_arr] is False:
+            self.log.debug("starting on index {}".format(index_in_arr))
+            self.vlc_player_list[index_in_arr] = vlc.MediaPlayer(
+                self.soundpath_list[index_in_arr])
+            self.vlc_player_list[index_in_arr].play()
+            self.controller_list[index_in_arr] = True
+        else:            
+            self.log.debug("stopping on index {}".format(index_in_arr))
+            self.vlc_player_list[index_in_arr].stop()
+            self.controller_list[index_in_arr] = False
 
     def control(self, index_in_arr):
-        self.log.info("index: {}".format(index_in_arr))
-        self.current_index = index_in_arr
-        self.flip()
+        self.log.debug("index: {}".format(index_in_arr))
+        self.flip(index_in_arr)
