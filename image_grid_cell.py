@@ -17,8 +17,10 @@ class ImageCell:
             bg_color=_c.DEFAULT_SPRITE_BACKGROUND,
             border_color=_c.BORDER_COLOR,
             border_width=4,
+            draw_background_en=False,
             canvas_area=None):
         self.log = log
+        self.draw_background_en=draw_background_en
         self.orig_img_path = img_path
         self.x_pos = x_pos
         self.y_pos = y_pos
@@ -76,28 +78,28 @@ class ImageCell:
     def set_draw_area(self, clip):
         # the top of the image is cut off (but not the whole image)
         if clip[1] >= self.y_pos and (clip[1]+clip[3]) > (self.y_pos + self.height):
-            self.log.info("cut at top")
+            self.log.debug("cut at top")
             clip_x = 0
-            clip_y = clip[1] - self.y_pos
+            clip_y = self.y_pos - clip[1] + self.border_width
             clip_width = self.width
             clip_height = self.height - clip[1] + self.y_pos - self.border_width
         # the bottom of the image is cut off
         elif (clip[1]+clip[3]) > self.y_pos and (clip[1]+clip[3]) < (self.y_pos+self.height):
-            self.log.info("cut at bottom")
+            self.log.debug("cut at bottom")
             clip_x = 0
             clip_y = 0
             clip_width = self.width
             clip_height = (clip[1]+clip[3]) - self.y_pos - self.border_width
         # the image is entirely outside the bounds
         elif self.y_pos >= (clip[1]+clip[3]) or (self.y_pos+self.height <= clip[1]):
-            self.log.info("entirely in bounds")
+            self.log.debug("entirely in bounds")
             clip_x = 0
             clip_y = 0
             clip_width = 0
             clip_height = 0
         # the image is entirely inside the bounds
         else:
-            self.log.info('entirely out of bounds')
+            self.log.debug('entirely out of bounds')
             clip_x = 0
             clip_y = 0
             clip_width = self.width
@@ -105,10 +107,10 @@ class ImageCell:
         clip_height = max(0, clip_height)
         img_area = (clip_x, clip_y, clip_width, clip_height)
         if 'floor' in self.img_path:
-            self.log.info("image path: {}".format(self.orig_img_path))
-            self.log.info("setting new area to {}".format(img_area))
-            self.log.info("current rectangle is: {}".format(self.get_rect()))
-            self.log.info("")
+            self.log.debug("image path: {}".format(self.orig_img_path))
+            self.log.debug("setting new area to {}".format(img_area))
+            self.log.debug("current rectangle is: {}".format(self.get_rect()))
+            self.log.debug("")
         self.draw_area = img_area
 
     def make_temp_path(self):
@@ -176,35 +178,29 @@ class ImageCell:
             self.resize_img(self.width, self.height)
 
         # draw rectangles for the image cell
-        # if self.highlighted:
-        #     bcolor = _c.HIGHLIGHT_BORDER_COLOR
-        # else:
-        #     bcolor = self.border_color
+        if self.highlighted:
+            bcolor = _c.HIGHLIGHT_BORDER_COLOR
+        else:
+            bcolor = self.border_color
 
-        # if self.draw_area is None:
-        #     border_rect = self.get_rect()
-        # else:
-        #     border_rect = (self.x_pos, self.y_pos+self.draw_area[1],
-        #         self.draw_area[2], self.draw_area[3])
-        # top_rect = (   
-        #     self.x_pos+self.border_width, 
-        #     border_rect[1]+self.border_width, 
-        #     border_rect[2]-2*self.border_width, 
-        #     border_rect[3]-2*self.border_width
-        # )
-        # self.button_border = pygame.draw.rect(
-        #     self.disp,  
-        #     bcolor,
-        #     border_rect
-        # )
-        # self.button_top = pygame.draw.rect(
-        #     self.disp,
-        #     self.bg_color,
-        #     top_rect
-        # )
-        # if self.canvas_area is not None:
-        #     self.button_border.clip(self.canvas_area)
-        #     self.button_top.clip(self.canvas_area)
+        if self.draw_background_en:
+            border_rect = self.get_rect()
+            top_rect = (   
+                self.x_pos+self.border_width, 
+                border_rect[1]+self.border_width, 
+                border_rect[2]-2*self.border_width, 
+                border_rect[3]-2*self.border_width
+            )
+            self.button_border = pygame.draw.rect(
+                self.disp,  
+                bcolor,
+                border_rect
+            )
+            self.button_top = pygame.draw.rect(
+                self.disp,
+                self.bg_color,
+                top_rect
+            )
 
         # reposition the image
         if self.draw_area is None:
@@ -244,7 +240,9 @@ class ImageCell:
         return (self.x_pos, self.y_pos, self.width, self.height)
 
     def check_collision(self, pos):
-        return self.button_border.collidepoint(pos)
+        r = self.img.get_rect()
+        r = (r[0]+self.x_pos, r[1]+self.y_pos, r[2], r[3])
+        return pygame.Rect(r).collidepoint(pos)
 
     def __repr__(self):
         return "image of {}".format(self.orig_img_path)

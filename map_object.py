@@ -33,6 +33,7 @@ class MapObject():
                     height=_c.TILE_HEIGHT, 
                     img_path=_c.TILE_IMAGES.get(_c.FLOOR), 
                     disp=self.disp, 
+                    draw_background_en=True,
                     log=self.log,
                     border_color=_c.BORDER_COLOR,
                     border_width=1
@@ -60,7 +61,10 @@ class MapObject():
     def set_tile_at_position(self, pos, tile):
         selected_tile = self.get_tile_at_pos(pos)
         if selected_tile is not None:
-            selected_tile.set_tile_sprite(_c.TILE_IMAGES.get(tile))
+            if 'png' in tile:
+                selected_tile.set_tile_sprite(tile)
+            else:
+                selected_tile.set_tile_sprite(_c.TILE_IMAGES.get(tile))
             selected_tile.draw()
 
     def render(self):

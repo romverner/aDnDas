@@ -133,7 +133,7 @@ class aDnDias:
             color=_c.BG_COLOR, 
             disp=self.disp, 
             log=self.log)
-        map_tile_table = sg.ScrollGrid(
+        self.map_tile_table = sg.ScrollGrid(
             x_pos=_c.GRID_WIDTH*6, 
             y_pos=_c.GRID_HEIGHT*8, 
             width=_c.GRID_WIDTH*3, 
@@ -144,7 +144,7 @@ class aDnDias:
             img_list=_c.AVAILABLE_SPRITES+_c.AVAILABLE_TILES,
             bg_color=_c.BUTTON_TEXT_COLOR,
             log=self.log)
-        self.buttons.extend(map_tile_table.get_buttons())
+        self.buttons.extend(self.map_tile_table.get_buttons())
 
         # User Buttons
         user_bg = button_grid.ButtonGrid(
@@ -177,6 +177,9 @@ class aDnDias:
 
     def mouse_up_handler(self, event):
         self.mouse_clicked = False
+        tmp_tile_update = self.map_tile_table.check_collision(event.pos)
+        if tmp_tile_update is not None:
+            self.tile_update_type = tmp_tile_update
         self.mo.set_tile_at_position(event.pos, self.tile_update_type)
 
         # check through all buttons being tracked, act if they are clicked

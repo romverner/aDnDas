@@ -53,6 +53,8 @@ class ScrollGrid:
         self.log = log
         self.disp = disp
         self.bg_color = bg_color
+        self.scrollbar_color = (100,100,100)
+        self.slider_color = (80, 80, 80)
 
         # create the scroll bar elements
         self.canvas_height = (self.cell_height+y_pad)*n_rows
@@ -124,6 +126,7 @@ class ScrollGrid:
                         bg_color=(255,255,255,255),
                         border_color=(255,255,255,255),
                         log=self.log,
+                        draw_background_en=False,
                         canvas_area=canvas_area,
                         border_width=border_width))
                     self.tile_list[-1].resize_img(
@@ -131,6 +134,7 @@ class ScrollGrid:
                     self.tile_list[-1].set_clip(self.get_rect())
                 img_idx += 1
         self.draw()
+        self.scroll_up() # force render
         
     def get_buttons(self):
         return [self.up_button, self.down_button]
@@ -191,11 +195,18 @@ class ScrollGrid:
         return (self.x_pos, self.y_pos, self.width-self.scroll_width, 
             self.height)
 
+    def check_collision(self, pos):
+        for img in self.tile_list:
+            if img.check_collision(pos):
+                self.log.debug("user clicked on sprite with orig img: {}".format(img.orig_img_path))
+                return img.orig_img_path
+        return None
+
     def draw(self):
         # create the background and the scrollbar
         self.scroll_area = pygame.draw.rect(
                 self.disp,
-                (64, 64, 64),
+                self.scrollbar_color,
                 (self.x_pos+self.width-self.scroll_width,
                  self.y_pos+self.scroll_button_height,
                  self.scroll_width,
@@ -205,7 +216,7 @@ class ScrollGrid:
             (self.canvas_pos/(self.max_canvas_pos - self.min_canvas_pos)))
         self.slider = pygame.draw.rect(
                 self.disp,
-                (96, 96, 96),
+                self.slider_color,
                 (self.x_pos+self.width-self.scroll_width,
                  self.y_pos+self.scroll_button_height+slider_pos,
                  self.scroll_width,
