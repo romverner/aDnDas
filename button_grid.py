@@ -92,7 +92,7 @@ class ButtonGrid:
                             callback=callback_list[button_idx],
                             expand=False, 
                             disp=disp, 
-                            idx_grid=int(button_idx),
+                            #idx_grid=int(button_idx),
                             log=log,
                             color=color,
                             font_height=font_height,

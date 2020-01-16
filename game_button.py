@@ -6,7 +6,7 @@ class PGButton:
     """
     Class for a button in pygame
     """
-    def __init__(self, x_pos, y_pos, width, height, text, disp, idx_grid, 
+    def __init__(self, x_pos, y_pos, width, height, text, disp, idx_grid=None, 
             expand=False, callback=None, log=logging.getLogger(), 
             color=_c.BUTTON_COLOR,
             click_color=_c.DEPRESSED_BUTTON, border_color=_c.BORDER_COLOR,
