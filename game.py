@@ -71,6 +71,7 @@ class aDnDias:
                 x_pos=_c.GRID_WIDTH*1, 
                 y_pos=_c.GRID_HEIGHT*13, 
                 fit_to_text=False, 
+                toggle=True,
                 x_pad=10, 
                 y_pad=10, 
                 log=self.log)

@@ -6,7 +6,7 @@ class PGButton:
     """
     Class for a button in pygame
     """
-    def __init__(self, x_pos, y_pos, width, height, text, disp, idx_grid=None, 
+    def __init__(self, x_pos, y_pos, width, height, text, disp, 
             expand=False, callback=None, log=logging.getLogger(), 
             color=_c.BUTTON_COLOR,
             click_color=_c.DEPRESSED_BUTTON, border_color=_c.BORDER_COLOR,
@@ -33,7 +33,6 @@ class PGButton:
         self.button_top = None
         self.expand = expand
         self.font = pygame.font.Font('freesansbold.ttf', int(self.height*font_height))
-        self.index_of_grid = idx_grid
 
         self.draw_unclicked()
 
@@ -105,10 +104,7 @@ class PGButton:
         self.click_count += 1
         self.log.debug("{} clicked ({} times)".format(self, self.click_count))
         self.draw_unclicked()
-        if self.callback is not None and self.index_of_grid is not None:
-            index = int(self.index_of_grid)
-            self.callback(index)
-        elif self.callback is not None:
+        if self.callback is not None:
             self.callback()
 
     def __repr__(self):

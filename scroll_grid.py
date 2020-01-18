@@ -91,7 +91,6 @@ class ScrollGrid:
                 border_width=border_width,
                 text='v',
                 disp=self.disp,
-                idx_grid=None,
                 callback=self.scroll_down
             )
         
@@ -106,7 +105,6 @@ class ScrollGrid:
                 border_width=border_width,
                 text='^',
                 disp=self.disp,
-                idx_grid=None,
                 callback=self.scroll_up
             )
 
@@ -123,10 +121,8 @@ class ScrollGrid:
                         height=self.cell_height,
                         img_path=img_list[img_idx],
                         disp=self.disp,
-                        bg_color=(255,255,255,255),
-                        border_color=(255,255,255,255),
                         log=self.log,
-                        draw_background_en=False,
+                        draw_background_en=True,
                         canvas_area=canvas_area,
                         border_width=border_width))
                     self.tile_list[-1].resize_img(

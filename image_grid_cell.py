@@ -77,12 +77,14 @@ class ImageCell:
 
     def set_draw_area(self, clip):
         # the top of the image is cut off (but not the whole image)
-        if clip[1] >= self.y_pos and (clip[1]+clip[3]) > (self.y_pos + self.height):
+        self.canvas_area = clip
+        if clip[1] >= (self.y_pos+self.border_width) and (clip[1]+clip[3]) > (self.y_pos + self.height):
             self.log.debug("cut at top")
             clip_x = 0
             clip_y = self.y_pos - clip[1] + self.border_width
             clip_width = self.width
-            clip_height = self.height - clip[1] + self.y_pos - self.border_width
+            clip_height = self.height
+            #clip_height = self.height - clip[1] + self.y_pos - self.border_width
         # the bottom of the image is cut off
         elif (clip[1]+clip[3]) > self.y_pos and (clip[1]+clip[3]) < (self.y_pos+self.height):
             self.log.debug("cut at bottom")
@@ -184,23 +186,41 @@ class ImageCell:
             bcolor = self.border_color
 
         if self.draw_background_en:
-            border_rect = self.get_rect()
+            if self.canvas_area is None:
+                border_rect = self.get_rect()
+            else:
+                if self.y_pos < self.canvas_area[1]:
+                    border_height = self.height - (self.canvas_area[1]-self.y_pos) + 2*self.border_width
+                elif self.y_pos + self.height > self.canvas_area[1] + self.canvas_area[3]:
+                    border_height = self.height - ((self.y_pos + self.height) - (self.canvas_area[1] + self.canvas_area[3]))
+                else:
+                    border_height = self.height
+                border_rect = (
+                        self.x_pos,
+                        max(self.y_pos, self.canvas_area[1]),
+                        self.draw_area[2],
+                        max(0, border_height)
+                    )
             top_rect = (   
                 self.x_pos+self.border_width, 
                 border_rect[1]+self.border_width, 
-                border_rect[2]-2*self.border_width, 
-                border_rect[3]-2*self.border_width
+                max(0, border_rect[2]-2*self.border_width), 
+                max(0, border_rect[3]-2*self.border_width)
             )
-            self.button_border = pygame.draw.rect(
-                self.disp,  
-                bcolor,
-                border_rect
-            )
-            self.button_top = pygame.draw.rect(
-                self.disp,
-                self.bg_color,
-                top_rect
-            )
+            self.log.debug("border rect: {}".format(border_rect))
+            self.log.debug('top rect: {}'.format(top_rect))
+            self.log.debug("draw area: {}".format(self.draw_area))
+            if border_rect[3] > 0:
+                self.button_border = pygame.draw.rect(
+                    self.disp,  
+                    bcolor,
+                    border_rect
+                )
+                self.button_top = pygame.draw.rect(
+                    self.disp,
+                    self.bg_color,
+                    top_rect
+                )
 
         # reposition the image
         if self.draw_area is None:

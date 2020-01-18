@@ -1,6 +1,7 @@
 import logging
 import pygame
 import game_button
+import toggle_button
 import constants as _c
 
 
@@ -12,7 +13,7 @@ class ButtonGrid:
             click_border_color=_c.DEPRESSED_BORDER, border_width=4,
             text_color=_c.BUTTON_TEXT_COLOR, box_color=_c.FG_COLOR,
             click_text_color=_c.DEPRESSED_TEXT_COLOR, font_height=0.2,
-            box_border_color=_c.FG_BORDER_COLOR):
+            box_border_color=_c.FG_BORDER_COLOR, toggle=False):
         """
         A class to manage a group of buttons that should be spaced out into a 
         grid. All arguments provided in lists specify functionality in 
@@ -82,27 +83,50 @@ class ButtonGrid:
             for row in range(n_rows):
                 # if the label is not None create a button in this position
                 if label_list[button_idx] is not None:
-                    self.buttons.append(
-                        game_button.PGButton(
-                            x_pos=x_pos+x_pad/2+(x_pad+button_width)*col, 
-                            y_pos=y_pos+y_pad/2+(y_pad+button_height)*row, 
-                            width=button_width, 
-                            height=button_height, 
-                            text=label_list[button_idx],
-                            callback=callback_list[button_idx],
-                            expand=False, 
-                            disp=disp, 
-                            #idx_grid=int(button_idx),
-                            log=log,
-                            color=color,
-                            font_height=font_height,
-                            click_color=click_color, 
-                            border_color=border_color,
-                            click_border_color=click_border_color, 
-                            border_width=border_width,
-                            text_color=text_color, 
-                            click_text_color=click_text_color)
-                    )
+                    if toggle:
+                        self.buttons.append(
+                            toggle_button.ToggleButton(
+                                x_pos=x_pos+x_pad/2+(x_pad+button_width)*col, 
+                                y_pos=y_pos+y_pad/2+(y_pad+button_height)*row, 
+                                width=button_width, 
+                                height=button_height, 
+                                text=label_list[button_idx],
+                                callback=callback_list[button_idx],
+                                expand=False, 
+                                disp=disp, 
+                                #idx_grid=int(button_idx),
+                                log=log,
+                                color=color,
+                                font_height=font_height,
+                                click_color=click_color, 
+                                border_color=border_color,
+                                click_border_color=click_border_color, 
+                                border_width=border_width,
+                                text_color=text_color, 
+                                click_text_color=click_text_color)
+                        )
+                    else:
+                        self.buttons.append(
+                            game_button.PGButton(
+                                x_pos=x_pos+x_pad/2+(x_pad+button_width)*col, 
+                                y_pos=y_pos+y_pad/2+(y_pad+button_height)*row, 
+                                width=button_width, 
+                                height=button_height, 
+                                text=label_list[button_idx],
+                                callback=callback_list[button_idx],
+                                expand=False, 
+                                disp=disp, 
+                                #idx_grid=int(button_idx),
+                                log=log,
+                                color=color,
+                                font_height=font_height,
+                                click_color=click_color, 
+                                border_color=border_color,
+                                click_border_color=click_border_color, 
+                                border_width=border_width,
+                                text_color=text_color, 
+                                click_text_color=click_text_color)
+                        )
                 button_idx += 1
 
     def get_rect(self):
